@@ -12,7 +12,7 @@
 
 **INSTALLING**
 
-    - `git clone git-url`
+    - `git clone https://github.com/OtocolobusManulManul/chessbot`
     - `cd chessbot`
     - `cl sample.cc /link /release /O2`... PLEASE USE the /O2 and /Oy flag it speeds the application up so much. especially removing the windows stack overhead of each function call (https://learn.microsoft.com/en-us/cpp/build/stack-usage?source=recommendations&view=msvc-170) makes everything so much faster.
     - sample.exe just launches a game against the user as white and the bot as black.
