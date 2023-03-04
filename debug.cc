@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <windows.h>
 #include <map>
+#include <deque>
+#include <future>
 
 #include "includes/pieces.h"
 #include "includes/board.h"
@@ -14,6 +16,9 @@
 #include "includes/movement.h"
 #include "includes/paths.h"
 #include "includes/weights.h"
+#include "includes/cache.h"
+
+#define MIN_CACHE_DISTANCE 5
 
 #define STATUS_RERUN_SEARCH -1
 
@@ -23,23 +28,30 @@ enum minMaxPlayers {MAXER = 1, MINNER = -1};
 int minMaxers [] = {MAXER, MINNER};
 
 int MAXDEPTH = 7;          // max eval provided no other circumstance
-int nodes = 0;
+uint64_t nodes = 0;
+
+bool minimizedLastSearch = false;
 
 int ENDGAME_MAXDEPTH = 20; // also for captures
-int CAPTURE_CHAIN_FOLLOW = 2;
-
-int MIN_NODES = 10000000;  // for endgame processing
+int CAPTURE_CHAIN_FOLLOW = 1;
+                
+int MIN_NODES = 1000000;  // for endgame processing
                            // should be set to value
                            // low enough that it
                            // will not be reached
                            // during normal
                            // evaluation
-         
-int MAX_NODES = 500000000; // failsafe in the event that
-                           // if search space gets too
-                           // large and must me shrunk.
 
-// polymorphic minmax (sorta)
+                            // 500000000
+int MAX_NODES = 500000000; // failsafe in the event that
+                            // if search space gets too
+                            // large and must me shrunk.
+
+chessCache transpositionTable; // THE CACHE
+                               // IT'S HERE
+                               // AT LONG 
+                               // LAST...
+
 // on depth 0 returns move index
 // on all other depths returns board
 // evaluation. both are represented 
@@ -47,6 +59,13 @@ int MAX_NODES = 500000000; // failsafe in the event that
 
 int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int depth, signed int alpha, signed int beta)
 {
+
+    if(depth==0) {printf("minMax() to %d\n", MAXDEPTH);}
+
+    bool claimed = false;
+
+    signed int playerSide = minMaxers[turnNo % 2]; // both sides max
+                                                   // inverted scoreboards
 
     // ok so basically every single board node has exactly 1
     // stack based representation of the board space... since
@@ -73,7 +92,17 @@ int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int dep
 
     makeMove(board, &currentMove);        // printf("making move\n");
 
-    if(kingCapture) {return getBoardWeight(board);} // do not need to evaluate further.
+    if(kingCapture) {return -1 * getBoardWeight(board);} // do not need to evaluate further.
+
+    // publicKey hash = zobristHash(board, turn);
+
+    // cacheIndex response = transpositionTable[hash];
+
+    // if(!getCacheError(&response.cData) && depth != 0 && depth + response.depth >= MAXDEPTH) {return ((signed int) getCacheVal(&response.cData));} // CACHE_OK
+
+    // int dist = MAXDEPTH - depth;
+
+    // if(dist >= MIN_CACHE_DISTANCE && dist > response.depth) {transpositionTable.claim(hash); claimed = true;} // indicating we must set the value later on.
 
     // printf("NODE INIT COMPLETE\n");
     // printBoard(board);
@@ -82,7 +111,16 @@ int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int dep
     {
         if(!capture || depth >= MAXDEPTH + CAPTURE_CHAIN_FOLLOW || depth >= ENDGAME_MAXDEPTH) // all base cases 
         {
-            return getBoardWeight(board);
+
+            int weight = getBoardWeight(board);
+
+            /*if(claimed) 
+            {
+                printf("set cache val\n");
+                transpositionTable.set(hash, initCacheVal((uint32_t) weight), dist);
+            }*/
+
+            return weight;
         }
 
         else {
@@ -95,10 +133,9 @@ int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int dep
                                 // destructed when scope
                                 // exited
 
-    generateMoves(&moveQueue, board, turn); // printf("generating moves\n");
+    if (depth == 0) {printBoard(board); generateMoves(&moveQueue, board, turn, 1);} // printf("generating moves\n");
 
-    signed int playerSide = minMaxers[turnNo % 2]; // both sides max
-                                                   // inverted scoreboards
+    else {generateMoves(&moveQueue, board, turn);}
 
     signed int max = NEGATIVE_INFINITY;
     signed int eval = 0;
@@ -107,17 +144,27 @@ int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int dep
                     // avoids need for extra code.
     {
 
+        printf("MinMax choices:\n");
         printPathQueue(board, &moveQueue);
 
         int index = 0;
 
         printf("THINKING...\n");
 
+        std::deque<std::future<int>> queue;        
+
+        for(int i = 0; i < moveQueue.size(); i++) 
+        {
+            queue.push_back(std::async(minMax, board, moveQueue.at(i), turnNo + 1, depth + 1, alpha, beta));
+        }
+
         for(int i = 0; i < moveQueue.size(); i++) 
         {
             
-            eval = playerSide * minMax(board, moveQueue.at(i), turnNo + 1, depth + 1, alpha, beta);
+            eval = playerSide * queue.at(i).get();
             
+            printf("move %d eval: %d\n", i, eval);
+
             if(eval > max) 
             {
                 max = eval;
@@ -148,19 +195,23 @@ int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int dep
         }
 
 
-        if (nodes < MIN_NODES && MAXDEPTH < ENDGAME_MAXDEPTH)
+        if ((nodes < MIN_NODES && MAXDEPTH < ENDGAME_MAXDEPTH) && !minimizedLastSearch)
         {
-            printf("expanding search\n");
-            MAXDEPTH++;
+            minimizedLastSearch = false;
+            MAXDEPTH = MAXDEPTH + 2;
+            printf("expanding search (DEPTH %d)\n", MAXDEPTH);
             return -1;
         }
 
         if(nodes > MAX_NODES) 
         {
-            printf("minimizing search\n");
-            MAXDEPTH;
+            minimizedLastSearch = true; 
+            MAXDEPTH = MAXDEPTH - 2;
+            printf("minimizing search (DEPTH %d)\n", MAXDEPTH);
             return -1;
         }
+
+        minimizedLastSearch = false;
 
         return index; // final return value
 
@@ -209,12 +260,20 @@ int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int dep
         }
     }
 
+    /*
+    if(claimed) 
+    {
+        transpositionTable.set(hash, initCacheVal((uint32_t) max), dist);
+    }*/
+
     return max; // recursive upstream case
 
 }
 
 void main(void) 
 {
+
+    initZobristTable();
 
     int botMove = 0;
     int moveCount = 0;
@@ -275,20 +334,21 @@ void main(void)
                 moveCount ++;
                 
                 turnGlobal = turns[moveCount % 2];
-                generateMoves(&moveQueue, board, turnGlobal);
-                
+
                 do 
                 {
                     botMove = minMax(board, playerMove, moveCount, 0, NEGATIVE_INFINITY, INFINITY);
+                    printf("nodes %d\n", nodes);
+                    nodes = 0;
                 } while(botMove == STATUS_RERUN_SEARCH);
 
-                printf("nodes %d\n", nodes);
-                nodes = 0;
 
-                printPathQueue(board, &moveQueue);
-                printf("BOT MOVE: %d\n", botMove);
-
+                printf("GENERATED MOVES moves\n");
                 makeMove(board, &playerMove);
+
+                printBoard(board); generateMoves(&moveQueue, board, turnGlobal, 1);
+                printPathQueue(board, &moveQueue);
+                
                 makeMove(board, &moveQueue.at(botMove));
                 moveCount ++;
                 turnGlobal = turns[moveCount % 2];

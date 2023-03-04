@@ -111,23 +111,6 @@ piece * deserializePiece (FILE * fp)
     }
 }
 
-void printBoard(piece * board [][8])
-{
-    printf("   A   B   C   D   E   F   G   H\n\n");
-    for (int x = 0; x < DIMENSION; x ++ )
-    {
-        printf("%d ", x+1);
-        for (int y = 0; y < DIMENSION; y ++ )
-        {
-            printPiece(board[x][y]);
-        }
-        printf("\n\n");
-    }
-
-    printf("\n");
-
-}
-
 int serializeBoard(FILE * fp, piece *** board) 
 {
 

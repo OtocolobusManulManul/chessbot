@@ -10,8 +10,8 @@
 #undef INFINITY
 #endif
 
-#define INFINITY INT_MAX / 2
-#define NEGATIVE_INFINITY INT_MIN / 2 // because of 2s compliment negative bias
+#define INFINITY 1000000
+#define NEGATIVE_INFINITY -1000000 // because of 2s compliment negative bias
 
 #define DIMENSION 8 
 

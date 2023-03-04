@@ -10,6 +10,9 @@
 #include "weights.h"
 #include "paths.h"
 
+// each function here basically just works to iterate over and create a queue of valid
+// moves for a piece in a given position. 
+
 // 2s compliment abuse
 #define inBounds(x, y) ((unsigned int) x < 8 && (unsigned int) y < 8) 
 
@@ -233,7 +236,51 @@ void kingPath(BYTE turn, piece * board [][DIMENSION], BYTE x1, BYTE y1, std::deq
 void generateMoves(std::deque<move> * moveQueue, piece * board [][DIMENSION], BYTE turn)
 {
 
-    // printf("making path... turn==%d\n", turn);
+    for (int x = 0; x < DIMENSION; x ++)
+    {
+        for (int y = 0; y < DIMENSION; y ++)
+        {
+            
+            // printf("color: %d\n", board[y][x]->color);
+            BYTE boardTurn = board[y][x]->color; 
+
+            switch(board[y][x]->type)
+            {
+                case PAWN:
+                    if(boardTurn == turn) {pawnPath(turn, board, x, y, moveQueue);}
+                    break;
+
+                case BISHOP:
+                    if(boardTurn == turn) {bishopPath(turn, board, x, y, moveQueue);}
+                    break;
+            
+                case KNIGHT:
+                    if(boardTurn == turn) {knightPath(turn, board, x, y, moveQueue);}
+                    break;
+            
+                case ROOK:
+                    if(boardTurn == turn) {rookPath(turn, board, x, y, moveQueue);}
+                    break;
+            
+                case QUEEN:
+                    if(boardTurn == turn) {queenPath(turn, board, x, y, moveQueue);}
+                    break;
+
+                case KING:
+                    if(boardTurn == turn) {kingPath(turn, board, x, y, moveQueue);}
+                    break;
+
+                default: break;
+
+            }
+        }
+    }
+}
+
+void generateMoves(std::deque<move> * moveQueue, piece * board [][DIMENSION], BYTE turn, bool dbg)
+{
+
+    if(dbg) {printf("making path... turn==%d\nboard:\n", turn);}
 
     for (int x = 0; x < DIMENSION; x ++)
     {
