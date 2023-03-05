@@ -21,22 +21,22 @@ To get somewhat good moves out of the AI, the search stats must be turned way up
 
 just format your moves as follows: `E2-E4`. or `[file][rank]-[file][rank]`
 
-### Instillation 
+### Installation 
 
 **DEPENDENCIES**
 
-    - system specific downloads should be available here: https://visualstudio.microsoft.com/downloads 
-    - microsoft visual c++ compiler (tested on 19.34.31937 for x64)
-    - windows headers
-    - stl headers
+    * system specific downloads should be available here: https://visualstudio.microsoft.com/downloads 
+    * microsoft visual c++ compiler (tested on 19.34.31937 for x64)
+    * windows headers
+    * stl headers
 
 **INSTALLING**
 
-    - on your interpreter of choice run.
-    - `git clone https://github.com/OtocolobusManulManul/chessbot`
-    - `cd chessbot`
-    - `cl /std:c++20 /O2 /Oy debug.cc /link /release`...
-    - run.exe just launches a game against the user as white and the bot as black.
+    * on your interpreter of choice run.
+    * `git clone https://github.com/OtocolobusManulManul/chessbot`
+    * `cd chessbot`
+    * `cl /std:c++20 /O2 /Oy debug.cc /link /release`...
+    * run.exe just launches a game against the user as white and the bot as black.
 
 note on compiler flags and cxx standard:
 
@@ -48,22 +48,22 @@ libraries:
 [Moya C++ Pool Allocator](https://github.com/moya-lang/Allocator/)
 
 These Resources were very helpful:
-- [chess programming wiki](https://www.chessprogramming.org/Main_Page) especially the pages for:
-    - transposition tables
-    - iterative deepening
-    - parallel search 
-- [my bot works very differently than his, but I used this video a lot](https://www.youtube.com/watch?v=U4ogK0MIzqk)
+* [chess programming wiki](https://www.chessprogramming.org/Main_Page) especially the pages for:
+    * transposition tables
+    * iterative deepening
+    * parallel search 
+* [my bot works very differently than his, but I used this video a lot](https://www.youtube.com/watch?v=U4ogK0MIzqk)
 
 ## TODO
 
     I actually really plan on continuing this project on my own time to see just how good I can make the computer at chess. 
     
-    - after what I discussed in the writeup.md file, are still more things I have in consideration. 
+    * after what I discussed in the writeup.md file, are still more things I have in consideration. 
 
-    - Python based opening polyglot (from my understanding nearly all bots use some sort of opening book).
-        - with zobrist hashing I could probably implement my own.
-    - a better parallel search strategy. such as ABDADA (https://www.chessprogramming.org/ABDADA)
-    - PV-Move caching and iterative deepening. This is the one that will make the bot actually good. After the many parallel cache errors in the code are worked out this will be easy to implement and will make the bot much faster.
-    - Better tui support.
-        - this is a very big one for me now that I realize how big of a deal that debugging utilities are... being able to interact with the program in as many novel ways as possible really does dramatically improve the speed at which you can debug software.
-    - FEN serialization. Though it probably should have been the first thing I thought of.
+    * Python based opening polyglot (from my understanding nearly all bots use some sort of opening book).
+        * with zobrist hashing I could probably implement my own.
+    * a better parallel search strategy. such as ABDADA (https://www.chessprogramming.org/ABDADA)
+    * PV-Move caching and iterative deepening. This is the one that will make the bot actually good. After the many parallel cache errors in the code are worked out this will be easy to implement and will make the bot much faster.
+    * Better tui support.
+        * this is a very big one for me now that I realize how big of a deal that debugging utilities are... being able to interact with the program in as many novel ways as possible really does dramatically improve the speed at which you can debug software.
+    * FEN serialization. Though it probably should have been the first thing I thought of.
