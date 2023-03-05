@@ -188,9 +188,9 @@ void initZobristTable()
 {
 
     // stack allocated since it will only be needed
-    // once
+    // onces
 
-    # define PIECE_COUNT 13
+    #define PIECE_COUNT 13
 
     piece * pieces[PIECE_COUNT] = {
         wPawn,

@@ -11,6 +11,7 @@
 // essentially just setting up enum types for piece serializing
 // stole this method from libcurls curl.h file
 // but made it more efficient
+// https://github.com/curl/curl/blob/master/include/curl/curl.h
 
 #define PIECE(t, nu) t + nu * 10
 
@@ -71,6 +72,14 @@ void initMp ()
     moveMapY.insert(std::pair<char, int>('6',5));
     moveMapY.insert(std::pair<char, int>('7',6));
     moveMapY.insert(std::pair<char, int>('8',7));
+    moveMapX.insert(std::pair<char, int>('a',0));
+    moveMapX.insert(std::pair<char, int>('b',1));
+    moveMapX.insert(std::pair<char, int>('b',2));
+    moveMapX.insert(std::pair<char, int>('d',3));
+    moveMapX.insert(std::pair<char, int>('e',4));
+    moveMapX.insert(std::pair<char, int>('f',5));
+    moveMapX.insert(std::pair<char, int>('g',6));
+    moveMapX.insert(std::pair<char, int>('h',7));
 }
 
 piece * deserializePiece (FILE * fp)

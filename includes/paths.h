@@ -75,7 +75,7 @@ void pushMove(piece * board [][DIMENSION], BYTE x1, BYTE y1, BYTE x2, BYTE y2, s
 {
     // printMove(x1, y1, x2, y2);
 
-    if(isPiece(board[y2][x2])) {moveQueue->push_front(move(x1,y1,x2,y2));} // captures get evalled at higher priority
+    if(isPiece(board[y2][x2])) {moveQueue->push_front(move(x1,y1,x2,y2)); return;} // captures get evalled at higher priority
 
     moveQueue->push_back(move(x1,y1,x2,y2));
 }
