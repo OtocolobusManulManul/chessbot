@@ -1,5 +1,5 @@
 // compile just with
-// cl debug.cc /link /release /O2 /Oy
+// cl /std:c++20 /O2 /Oy debug.cc /link /release
 
 #define WIN32_LEAN_AND_MEAN
 #pragma once
@@ -19,7 +19,6 @@
 #include "includes/cache.h"
 
 #define MIN_CACHE_DISTANCE 5
-
 #define STATUS_RERUN_SEARCH -1
 
 BYTE turns [] = {WHITE, BLACK};
@@ -33,17 +32,16 @@ uint64_t nodes = 0;
 bool minimizedLastSearch = false;
 
 int ENDGAME_MAXDEPTH = 20; // also for captures
-int CAPTURE_CHAIN_FOLLOW = 1;
-                
-int MIN_NODES = 1000000;  // for endgame processing
+int CAPTURE_CHAIN_FOLLOW = 2;
+                  
+int MIN_NODES = 1000000;   // for endgame processing
                            // should be set to value
                            // low enough that it
                            // will not be reached
                            // during normal
                            // evaluation
-
-                            // 500000000
-int MAX_NODES = 500000000; // failsafe in the event that
+                
+int MAX_NODES = 1000000000; // failsafe in the event that
                             // if search space gets too
                             // large and must me shrunk.
 
@@ -51,6 +49,7 @@ chessCache transpositionTable; // THE CACHE
                                // IT'S HERE
                                // AT LONG 
                                // LAST...
+                               // (still does not work well)
 
 // on depth 0 returns move index
 // on all other depths returns board
@@ -92,7 +91,7 @@ int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int dep
 
     makeMove(board, &currentMove);        // printf("making move\n");
 
-    if(kingCapture) {return -1 * getBoardWeight(board);} // do not need to evaluate further.
+    if(kingCapture) {return getBoardWeight(board);} // do not need to evaluate further.
 
     // publicKey hash = zobristHash(board, turn);
 
@@ -151,17 +150,17 @@ int minMax(piece * oldBoard [][DIMENSION], move currentMove, int turnNo, int dep
 
         printf("THINKING...\n");
 
-        std::deque<std::future<int>> queue;        
+        std::deque<std::future<int>> threadPool; 
 
         for(int i = 0; i < moveQueue.size(); i++) 
         {
-            queue.push_back(std::async(minMax, board, moveQueue.at(i), turnNo + 1, depth + 1, alpha, beta));
+            threadPool.push_back(std::async(minMax, board, moveQueue.at(i), turnNo + 1, depth + 1, alpha, beta));
         }
 
         for(int i = 0; i < moveQueue.size(); i++) 
         {
             
-            eval = playerSide * queue.at(i).get();
+            eval = playerSide * threadPool.at(i).get();
             
             printf("move %d eval: %d\n", i, eval);
 
