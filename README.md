@@ -6,11 +6,11 @@
 
    The algorithm and the game logic are separate from each other. So the bot could technically play any other game with a square board and and support for the minMax algorithm. The rules of the game and evaluation functions could easily be switched out.
 
-   The current chess logic does not support en passant and 
+The current chess logic does not support en passant and castling since my goal was to create an AI, not implement the rules of chess in C++ 
+ 
+the major upside is that the actual system is fast... able to evaluate a billion or more positions per minute (depending on hardware of course). Though the algorithm is still not very smart, a fact largely compensated by its evaluation speed. the solution I implemented for varying search lengths is also a bad workaround, and so until I can implement proper iterative deepening it will struggle in that department. Though I suspect once the cache becomes resilient enough to support that in a multithread environment 
 
-   the major upside is that the actual system is fast... able to evaluate a billion or more positions per minute (depending on hardware of course). Though the algorithm is still not very smart, a fact largely compensated by its evaluation speed. the solution I implemented for varying search lengths is also a bad workaround, and so until I can implement proper iterative deepening it will struggle in that department. Though I suspect once the cache becomes resilient enough to support that in a multithread environment 
-
-   The project also implements a lockless caching system to implement algorithms based on transposition tables or PV-Moves. The code can be seen in `cache.h` and a basic implementation using it can be added by removing comment lines in the algorithm in `debug.cc`. Though currently it is still very experimental and no doubt a lot of issues are still lurking in it. the system works perfectly in a single thread environment, though I think I was naive to think I wouldn't need to use atomics in a multithreaded one. So I think I may need to use those before it could support asynchronous search.
+The project also implements a lockless caching system to implement algorithms based on transposition tables or PV-Moves. The code can be seen in `cache.h` and a basic implementation using it can be added by removing comment lines in the algorithm in `debug.cc`. Though currently it is still very experimental and no doubt a lot of issues are still lurking in it. the system works perfectly in a single thread environment, though I think I was naive to think I wouldn't need to use atomics in a multithreaded one. So I think I may need to use those before it could support asynchronous search.
 
 ## performance and example cases:
 
@@ -26,10 +26,10 @@ just format your moves as follows: `E2-E4`. or `[file][rank]-[file][rank]`
 
 **DEPENDENCIES**
 
-    * system specific downloads should be available here: https://visualstudio.microsoft.com/downloads 
-    * microsoft visual c++ compiler (tested on 19.34.31937 for x64)
-    * windows headers
-    * stl headers
+    - system specific downloads should be available here: https://visualstudio.microsoft.com/downloads 
+    - microsoft visual c++ compiler (tested on 19.34.31937 for x64)
+    - windows headers
+    - stl headers
 
 **INSTALLING**
 
@@ -62,9 +62,9 @@ These Resources were very helpful:
     - after what I discussed in the writeup.md file, are still more things I have in consideration. 
 
     - Python based opening polyglot (from my understanding nearly all bots use some sort of opening book).
-        * with zobrist hashing I could probably implement my own.
+        - with zobrist hashing I could probably implement my own.
     - a better parallel search strategy. such as ABDADA (https://www.chessprogramming.org/ABDADA)
     - PV-Move caching and iterative deepening. This is the one that will make the bot actually good. After the many parallel cache errors in the code are worked out this will be easy to implement and will make the bot much faster.
-    -Better tui support.
-        -this is a very big one for me now that I realize how big of a deal that debugging utilities are... being able to interact with the program in as many novel ways as possible really does dramatically improve the speed at which you can debug software.
-    -FEN serialization. Though it probably should have been the first thing I thought of.
+    - Better tui support.
+        - this is a very big one for me now that I realize how big of a deal that debugging utilities are... being able to interact with the program in as many novel ways as possible really does dramatically improve the speed at which you can debug software.
+    - FEN serialization. Though it probably should have been the first thing I thought of.
