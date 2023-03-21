@@ -57,7 +57,7 @@ These Resources were very helpful:
 
 ## TODO
 
-    I actually really plan on continuing this project on my own time to see just how good I can make the computer at chess. 
+* I actually really plan on continuing this project on my own time to see just how good I can make the computer at chess. 
     
     - after what I discussed in the writeup.md file, are still more things I have in consideration. 
 
