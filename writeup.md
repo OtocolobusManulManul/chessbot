@@ -1,6 +1,6 @@
 ## Intro 
 
-    I would say as I progressed, for a very long time the goal got further away rather than closer. So eventually I tried to establish more realistic expectations of that goal and in doing that I ironically accomplished a lot more. 
+I would say as I progressed, for a very long time the goal got further away rather than closer. So eventually I tried to establish more realistic expectations of that goal and in doing that I ironically accomplished a lot more. 
 
 ## The Goal
 
