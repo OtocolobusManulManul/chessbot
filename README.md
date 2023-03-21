@@ -33,11 +33,11 @@ just format your moves as follows: `E2-E4`. or `[file][rank]-[file][rank]`
 
 **INSTALLING**
 
-    * on your interpreter of choice run.
-    * `git clone https://github.com/OtocolobusManulManul/chessbot`
-    * `cd chessbot`
-    * `cl /std:c++20 /O2 /Oy debug.cc /link /release`...
-    * run.exe just launches a game against the user as white and the bot as black.
+    - on your interpreter of choice run.
+    - `git clone https://github.com/OtocolobusManulManul/chessbot`
+    - `cd chessbot`
+    - `cl /std:c++20 /O2 /Oy debug.cc /link /release`...
+    - run.exe just launches a game against the user as white and the bot as black.
 
 note on compiler flags and cxx standard:
 
@@ -59,12 +59,12 @@ These Resources were very helpful:
 
     I actually really plan on continuing this project on my own time to see just how good I can make the computer at chess. 
     
-    * after what I discussed in the writeup.md file, are still more things I have in consideration. 
+    - after what I discussed in the writeup.md file, are still more things I have in consideration. 
 
-    * Python based opening polyglot (from my understanding nearly all bots use some sort of opening book).
+    - Python based opening polyglot (from my understanding nearly all bots use some sort of opening book).
         * with zobrist hashing I could probably implement my own.
-    * a better parallel search strategy. such as ABDADA (https://www.chessprogramming.org/ABDADA)
-    * PV-Move caching and iterative deepening. This is the one that will make the bot actually good. After the many parallel cache errors in the code are worked out this will be easy to implement and will make the bot much faster.
-    * Better tui support.
-        * this is a very big one for me now that I realize how big of a deal that debugging utilities are... being able to interact with the program in as many novel ways as possible really does dramatically improve the speed at which you can debug software.
-    * FEN serialization. Though it probably should have been the first thing I thought of.
+    - a better parallel search strategy. such as ABDADA (https://www.chessprogramming.org/ABDADA)
+    - PV-Move caching and iterative deepening. This is the one that will make the bot actually good. After the many parallel cache errors in the code are worked out this will be easy to implement and will make the bot much faster.
+    -Better tui support.
+        -this is a very big one for me now that I realize how big of a deal that debugging utilities are... being able to interact with the program in as many novel ways as possible really does dramatically improve the speed at which you can debug software.
+    -FEN serialization. Though it probably should have been the first thing I thought of.
