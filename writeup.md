@@ -5,6 +5,7 @@ I would say as I progressed, for a very long time the goal got further away rath
 ## The Goal
 
 The goal started as *make a chess bot in c++ that can play chess well*
+
 The goal then got reworked to *make a functional base for a very good chess analysis engine in C++, and create a "proof of concept" for that system.*
 
 I would say I was successful in accomplishing the second goal and, which is much more ambitious than I first realized.
@@ -152,9 +153,9 @@ similarly the bot will make moves like this
 7  ..  BP  BP  Bk  BK  Wk  BP  BP
 
 8  BR  ..  BB  BQ  ..  BB  Bk  BR
+```
 
 where it will get completely lost, not knowing how to attack the bishop to leave the knight hanging.
-```
 
 ### Future Considerations
 
